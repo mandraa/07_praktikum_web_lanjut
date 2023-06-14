@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('Kelas', 15);
             $table->string('Jurusan', 50);
             $table->string('No_Handphone', 20);
+            $table->string('Email', 50);
+            $table->string('Tanggal_Lahir', 20);
             $table->timestamps();
         });
     }

@@ -12,13 +12,15 @@ class MahasiswaController extends Controller
      * 
      *
      */
-    public function index()
-    {
-        //fungsi eloquent menampilkan data menggunakan pagination
-       $mahasiswas = Mahasiswa::all(); //Mengambil semua isi tabel
-        $posts = Mahasiswa::orderBy('Nim', 'desc')->paginate(6);
-        return view('mahasiswa.index', compact('mahasiswas'));
-        with('i', (request()->input('page', 1) -1) *5);
+    public function index(Request $request){
+        if($request->has('search')) {
+            $mahasiswas = Mahasiswa::where('Nama','Like','%'.$request->search.'%')->paginate(10);
+        } else {
+            $mahasiswas = Mahasiswa::orderBy('id', 'desc')->paginate(10);
+        }
+
+        return view('mahasiswa.index', ['mahasiswas' => $mahasiswas]);
+    
     }
     /**
      * Show the form for creating a new resource.
@@ -40,6 +42,8 @@ class MahasiswaController extends Controller
             'Kelas' => 'required',
             'Jurusan' => 'required',
             'No_Handphone' => 'required',
+            'Email' => 'required',
+            'Tanggal_Lahir' => 'required',
         ]);
 
         //fungsi eloquent untuk menambah data
@@ -53,7 +57,7 @@ class MahasiswaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($Nim)
     {
         //menampilkan detail data dengan menemukan/berdasarkan Nim Mahasiswa
         $Mahasiswa = Mahasiswa::find($Nim);
@@ -63,7 +67,7 @@ class MahasiswaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $Nim)
     {
         //menampilkan detail data dengan menemukan berdasarkan Nim Mahasiswa untuk diedit
         $Mahasiswa = Mahasiswa::find($Nim);
@@ -73,7 +77,7 @@ class MahasiswaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $Nim)
     {
         //melakukan validasi data
         $request->validate([
@@ -82,22 +86,24 @@ class MahasiswaController extends Controller
             'Kelas' => 'required',
             'Jurusan' => 'required',
             'No_Handphone' => 'required',
+            'Email' => 'required',
+            'Tanggal_Lahir' => 'required',
         ]);
         //fungsi eloquent untuk mengupdate data inputan kita
         Mahasiswa::find($Nim)->update($request->all());
         //jika data berhasil diupdate, akan kembali ke halaman utama
-        return redirect()->route('mahasiswas.index')
+        return redirect()->route('mahasiswa.index')
         ->with('success', 'Mahasiswa Berhasil Diupdate');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($Nim)
     {
         //fungsi eloquent untuk menghapus data
         Mahasiswa::find($Nim)->delete();
-        return redirect()->route('mahasiswas.index')
+        return redirect()->route('mahasiswa.index')
         ->with('success', 'Mahasiswa Berhasil Dihapus');
     }
 };

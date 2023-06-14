@@ -27,6 +27,8 @@ class Mahasiswa extends Model
         'Kelas',
         'Jurusan',
         'No_Handphone',
+        'Email',
+        'Tanggal_Lahir',
     ];
 
     /**
